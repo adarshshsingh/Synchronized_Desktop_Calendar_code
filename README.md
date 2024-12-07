@@ -1,31 +1,3 @@
-<div align="center">
-    <p>
-        <img src="./docs/static/logo.png" width="200" height="200"/>
-        <h1 align="center">CalendarSync</h1>
-        <b>Stateless CLI tool to sync calendars across different calendaring systems.</b>
-    </p>
-</div>
-
-# Motivation
-
-As consultants, you may need to use multiple calendars (2-n). Additionally, you
-need to keep up with all existing appointments in each of your calendars when
-you want to make new appointments. This means you have to check each calendar on
-its own. What we wanted to achieve is a single overview over all events in each
-of the calendars. Preferably in your primary calendar.
-
-There are some commercial / freemium solutions for this
-([reclaim.ai](https://reclaim.ai/),
-[SyncThemCalendars](https://syncthemcalendars.com/)), but their privacy policy
-is unclear. Calendar data is not only highly interesting personal data (who
-participates in which appointment and when?) but also highly interesting from an
-industrial espionage/targeted advertising perspective. The two third party
-providers get to see the content of the calendar events. In good appointments,
-there is a lot of secret and relevant company data in the appointment agenda.
-
-To keep track of all the events, we created `CalendarSync`, which allows the
-syncing of events without breaking data protection laws and without exposing
-data to a third party.
 
 # How to use
 
@@ -202,19 +174,4 @@ from your calendar?
 Use the `--clean` flag to get rid of all the unwanted events. (We leave your
 events which weren't synced with CalendarSync alone! :) )
 
-# Trademarks
 
-GOOGLE is a trademark of GOOGLE INC. OUTLOOK is a trademark of Microsoft
-Corporation
-
-# Relevant RFCs and Links
-
-[RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545)  Internet Calendaring
-and Scheduling Core Object Specification (iCalendar) is used in the Google
-calendar API to denote recurrence patterns. CalDav [RFC
-4791](https://datatracker.ietf.org/doc/html/rfc4791) uses the dateformat
-specified in RFC 5545.
-
-# License
-
-MIT
