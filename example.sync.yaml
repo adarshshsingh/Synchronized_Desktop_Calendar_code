@@ -1,0 +1,79 @@
+---
+sync:
+  start:
+    identifier: MonthStart # 1st of the current month
+    offset: -1 # MonthStart -1 month (beginning of last month)
+  end:
+    identifier: MonthEnd # last day of the current month
+    offset: +1 # MonthEnd +1 month (end of next month)
+
+auth:
+  storage_mode: yaml # Currently, only yaml is supported
+  config:
+    # Here you can use the standard unix abbreviation for home directory (~).
+    # This works also for Windows systems e.g. ~\calendar-sync\auth-storage.yaml
+    path: "./auth-storage.yaml"
+
+# Unfortunately, at this point, we only support one source adapter.
+# This is something which we're going to add soon.
+
+# Outlook source adapter
+source:
+  adapter:
+    type: "outlook_http"
+    calendar: "[base64-format string here]"
+    oAuth:
+      clientId: "[UUID-format string here]"
+      tenantId: "[UUID-format string here]"
+
+# ZEP source adapter
+#source:
+#  adapter:
+#    type: "zep"
+#    calendar: "absences"
+#    config:
+#      username: "testymctestface@inovex.de"
+#      password: "[password here]"
+#      endpoint: "https://zep.company.com/zep/sync/dav.php/calendars""
+
+sink:
+  adapter:
+    type: google
+    calendar: "target-calendar@group.calendar.google.com"
+    oAuth:
+      clientId: "[google-oAuth-client-id]"
+      clientKey: "[google-oAuth-client-key]"
+
+transformations:
+  - name: KeepDescription
+  - name: KeepLocation
+  - name: KeepReminders
+  - name: ReplaceTitle
+    config:
+      NewTitle: "[Synchronisierter Termin]"
+  - name: KeepMeetingLink
+  # Do not use KeepAttendees when the Outlook Adapter is used as a sink. There is no way to suppress mail invitations
+  - name: KeepAttendees
+    config:
+      UseEmailAsDisplayName: true
+
+# Filters remove events from being synced due to different criteria
+filters:
+  # Events where you declined the invitation aren't synced
+  - name: DeclinedEvents
+  # Events which cover the full day aren't synced
+  - name: AllDayEvents
+  # Events within the specified timeframe will be retained, while all others will be filtered out.
+  # hours are represented in the 24h time format
+  - name: TimeFrame
+    config:
+      HourStart: 8
+      HourEnd: 17
+  # Events where the title matches the ExcludeRegexp (RE2 Regex) aren't synced
+  - name: RegexTitle
+    config:
+      ExcludeRegexp: ".*test"
+
+# Perform multiple calendar updates concurrently
+# Defaults to 1 if not set
+updateConcurrency: 3

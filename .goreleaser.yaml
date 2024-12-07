@@ -1,0 +1,118 @@
+---
+before:
+  hooks:
+    - go mod tidy
+    - go mod vendor
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    dir: ./cmd/calendarsync
+    ldflags:
+      - -X 'main.Version={{.Version}}'
+    goos:
+      - linux
+      - windows
+      - darwin
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - '6'
+      - '7'
+    ignore:
+      - goos: windows
+        goarch: arm64
+      - goos: freebsd
+        goarch: arm64
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+source:
+  enabled: true
+  files:
+  - vendor
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+dockers:
+  - image_templates:
+      - "ghcr.io/inovex/calendarsync:{{ .Version }}-amd64"
+    dockerfile: .goreleaser.dockerfile
+    goarch: amd64
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.source=https://github.com/inovex/CalendarSync
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+
+  - image_templates:
+      - "ghcr.io/inovex/calendarsync:{{ .Version }}-arm64"
+    dockerfile: .goreleaser.dockerfile
+    goarch: arm64
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+      - --label=org.opencontainers.image.source=https://github.com/inovex/CalendarSync
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+
+  - image_templates:
+      - "ghcr.io/inovex/calendarsync:{{ .Version }}-armv6"
+    dockerfile: .goreleaser.dockerfile
+    goarch: arm
+    goarm: "6"
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm/v6
+      - --label=org.opencontainers.image.source=https://github.com/inovex/CalendarSync
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+
+  - image_templates:
+      - "ghcr.io/inovex/calendarsync:{{ .Version }}-armv7"
+    dockerfile: .goreleaser.dockerfile
+    goarch: arm
+    goarm: "7"
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm/v7
+      - --label=org.opencontainers.image.source=https://github.com/inovex/CalendarSync
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+
+docker_manifests:
+  - name_template: "ghcr.io/inovex/calendarsync:{{ .Version }}"
+    image_templates:
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-amd64'
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-arm64'
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-armv7'
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-armv6'
+  - name_template: "ghcr.io/inovex/calendarsync:latest"
+    image_templates:
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-amd64'
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-arm64'
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-armv7'
+      - 'ghcr.io/inovex/calendarsync:{{ .Version }}-armv6'
